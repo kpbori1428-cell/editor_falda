@@ -3,7 +3,21 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import {defineConfig, loadEnv} from 'vite';
 
-export default defineConfig({
-  base: '/editor_falda/',  // ⚠️ IMPORTANTE: Cambia según el nombre de tu repo
-  plugins: [react()],
+export default defineConfig(({mode}) => {
+  const env = loadEnv(mode, '.', '');
+  return {
+    base: '/editor_falda/',  // ⭐ AGREGAR ESTA LÍNEA
+    plugins: [react(), tailwindcss()],
+    define: {
+      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
+    },
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, '.'),
+      },
+    },
+    server: {
+      hmr: process.env.DISABLE_HMR !== 'true',
+    },
+  };
 });
